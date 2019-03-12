@@ -10,7 +10,6 @@
 
 import threading, time, os, signal, sys
 
-
 class Thread(threading.Thread):
     """Wrapper for the Thread class in the threading module."""
 
@@ -65,6 +64,12 @@ class Event(threading.Event):
     """Wrapper for the Event class in the threading module."""
     signal = threading.Event.set
 
+_print = print
+_print_mutex = Mutex()
+def print(*args, **kwargs):
+    _print_mutex.lock()
+    _print(*args, **kwargs)
+    _print_mutex.unlock()
     
 def watcher():
     """Forks a process, and the child process returns.
@@ -90,5 +95,4 @@ def watcher():
         except OSError:
             pass
     sys.exit()
-
 
